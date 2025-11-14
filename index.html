@@ -1090,7 +1090,7 @@
             box-shadow: 0 0 15px rgba(116, 185, 255, 0.5);
         }
 
-        /* YENİ EKLENEN: SORULAR SAYFASI STİLLERİ */
+        /* YENİ EKLENEN: SORULAR SAYFASI STİLLERİ (BOT) */
         #questionsPage {
             display: none;
             padding: 20px;
@@ -1099,7 +1099,7 @@
             max-height: 700px;
             flex-direction: column;
         }
-        #chatContainer {
+        #botChatContainer {
             flex-grow: 1;
             overflow-y: auto;
             padding: 20px;
@@ -1109,105 +1109,66 @@
             border: 1px solid var(--glass-border);
             -ms-overflow-style: none;
             scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        #chatContainer::-webkit-scrollbar {
+        #botChatContainer::-webkit-scrollbar {
             display: none;
         }
-        .chat-empty-message {
-            text-align: center;
-            color: var(--text-color-muted);
-            font-size: 1.1em;
-            padding-top: 20px;
-        }
-        .chat-message {
-            background: var(--glass-bg);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .chat-message-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 5px;
-        }
-        .chat-user-name {
-            font-weight: 600;
-            color: var(--text-color);
-            font-size: 1.1em;
-        }
-        .chat-timestamp {
-            font-size: 0.8em;
-            color: var(--text-color-muted);
-        }
-        .chat-message-content p {
-            margin-bottom: 10px;
-            font-size: 1em;
+        .bot-message, .user-message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
             line-height: 1.5;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: chatSlideIn 0.5s ease forwards;
+        }
+        .bot-message {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid var(--glass-border);
+            align-self: flex-start;
             color: var(--text-color);
         }
-        .chat-message-content .chat-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-top: 10px;
-            border: 1px solid var(--glass-border);
+        .user-message {
+            background: #74b9ff;
+            align-self: flex-end;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        #messageInputArea {
+        @keyframes chatSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        #botQuestionButtons {
             flex-shrink: 0;
-            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 15px;
             border-top: 1px solid var(--glass-border);
         }
-        #messageInputArea textarea {
-            width: 100%;
-            min-height: 80px;
-            background: rgba(0,0,0,0.2);
+        .bot-question-btn {
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
+            color: var(--text-color);
             padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
             font-family: 'Poppins', sans-serif;
             font-size: 1em;
-            color: var(--text-color);
-            resize: vertical;
-        }
-        #messageInputArea textarea::placeholder {
-            color: var(--text-color-muted);
-        }
-        #chat-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        #chatPhotoInput {
-            display: none; /* Asıl input'u gizle */
-        }
-        .chat-file-label {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 15px;
-            border-radius: 25px;
-            color: var(--text-color);
-            cursor: pointer;
-            font-weight: 500;
             transition: background 0.3s ease;
         }
-        .chat-file-label:hover {
-            background: rgba(255, 255, 255, 0.4);
+        .bot-question-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
-        .chat-guest-prompt {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-        }
-        .chat-guest-prompt p {
-            font-size: 1.1em;
-            color: var(--text-color-muted);
-            margin-bottom: 15px;
+        .bot-question-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
         /* YENİ STİLLER SONU */
 
@@ -1223,15 +1184,12 @@
                 height: 75vh;
                 padding: 10px;
             }
-            #chatContainer {
+            #botChatContainer {
                 padding: 10px;
             }
-            #chat-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            #chat-controls .auth-btn {
-                width: 100%;
+            .bot-question-btn {
+                padding: 12px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -1361,7 +1319,7 @@
                 <li>
                     <a href="#" id="questionsLink">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="10" x2="15" y2="10"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
-                        <span>Sorular</span>
+                        <span>Soru-Cevap Botu</span> <!-- DEĞİŞTİ -->
                     </a>
                 </li>
                  <li>
@@ -1566,16 +1524,19 @@
             <div id="districtDewPointList" class="district-list"></div>
         </div>
 
-        <!-- YENİ EKLENDİ: SORULAR SAYFASI İÇERİĞİ -->
+        <!-- YENİ EKLENDİ: SORULAR SAYFASI İÇERİĞİ (BOT) -->
         <div id="questionsPage" class="glass">
-            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.8em;">Sorular ve Tartışma</h2>
-            <div id="chatContainer">
-                <!-- Mesajlar buraya yüklenecek -->
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.8em;">Soru-Cevap Botu</h2>
+            <div id="botChatContainer">
+                <!-- Mesajlar buraya eklenecek -->
             </div>
-            <div id="messageInputArea">
-                <!-- Giriş/Misafir durumuna göre içerik buraya yüklenecek -->
+            <div id="botQuestionButtons">
+                <button class="bot-question-btn">Merhaba bu sene istanbul'da 2025-2026 kışı nasıl geçecek?</button>
+                <button class="bot-question-btn">Bu sene 2022'de ki gibi vortex olacak mı?</button>
+                <button class="bot-question-btn">İnstagram hesabınızın adı nedir?</button>
             </div>
         </div>
+        <!-- YENİ İÇERİK SONU -->
 
     </div>
 
@@ -1586,6 +1547,14 @@
         let loginAttempts = {};
         let lockoutInterval;
         let currentUser = null; // YENİ: Kullanıcı durumunu (giriş yapmış/misafir) takip eder
+
+        // --- YENİ EKLENDİ: BOT CEVAPLARI ---
+        const botAnswers = {
+            "Merhaba bu sene istanbul'da 2025-2026 kışı nasıl geçecek?": "Merhaba bu sene istanbul da sert bir kış bekliyoruz bu sene ülkemizi sık sık güçlü ve tarihi soğuklar ziyaret edecek. Kısaca bu kış bol bol güçlü soğuk hava dalgaları ve mevsimine göre normallerinde üzerinde bir kış bekliyoruz. Bu kış Marmara bölgesi kış şanslı gözüküyor gelişmeleri takip ediyoruz. Şuan gözüken bol soğuk ve bol kar yağışlı bir kış. Son Bilgiler için instagram hesabımızı takip edebilirsiniz @istanbul_hava_haberleri",
+            "Bu sene 2022'de ki gibi vortex olacak mı?": "Bunu söylemek henüz çok erken ama bu sene denizler sıcak bu sene vortex olma ihtimali yüksek Vortex(Kar Fırtınası)",
+            "İnstagram hesabınızın adı nedir?": "İnstagram hesabımızın adı @istanbul_hava_haberleri. Bizi oradan güncel hava durumu ve hava uyarıları için takip edebilirsiniz."
+        };
+        // --- BOT CEVAPLARI SONU ---
 
         function manageEffects(season) {
             const effectsContainer = document.getElementById('effectsContainer');
@@ -2391,143 +2360,69 @@
             return calculateDaysUntilSeason(8, 23); // 23 Eylül (ay 8)
         }
         
-        // --- YENİ EKLENDİ: SORULAR SAYFASI FONKSİYONLARI ---
+        // --- YENİ EKLENDİ: SORULAR SAYFASI FONKSİYONLARI (BOT) ---
         
-        // Mesaj giriş alanını ayarlar (giriş yapmış / misafir)
-        function setupChatInput() {
-            const inputArea = document.getElementById('messageInputArea');
-            if (currentUser) {
-                // Kullanıcı giriş yapmış, mesaj gönderme formunu göster
-                inputArea.innerHTML = `
-                    <textarea id="chatMessageInput" placeholder="Sorunuzu buraya yazın..."></textarea>
-                    <div id="chat-controls">
-                        <label class="chat-file-label" for="chatPhotoInput">📷 Fotoğraf Ekle</label>
-                        <input type="file" id="chatPhotoInput" accept="image/*">
-                        <button id="chatSendBtn" class="auth-btn" style="width: auto; padding: 10px 20px; margin-top: 0;">Gönder</button>
-                    </div>
-                `;
-                // Yeni eklenen butona event listener ata
-                document.getElementById('chatSendBtn').addEventListener('click', sendChatMessage);
-            } else {
-                // Misafir kullanıcı, giriş yapma butonunu göster
-                inputArea.innerHTML = `
-                    <div class="chat-guest-prompt">
-                        <p>Mesaj göndermek veya fotoğraf yüklemek için giriş yapmalısınız.</p>
-                        <button class="auth-btn" onclick="reLogin()" style="width: auto; padding: 10px 30px;">Giriş Yap / Üye Ol</button>
-                    </div>
-                `;
-            }
-        }
-        
-        // Kayıtlı mesajları localStorage'dan yükler ve gösterir
-        function loadChatMessages() {
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.innerHTML = ''; // Önceki mesajları temizle
-            const messages = JSON.parse(localStorage.getItem('weatherChatMessages') || '[]');
-            
-            if (messages.length === 0) {
-                 chatContainer.innerHTML = '<p class="chat-empty-message">Henüz soru sorulmamış. İlk soran siz olun!</p>';
-                 return;
-            }
-
-            messages.forEach(msg => {
-                const msgElement = document.createElement('div');
-                msgElement.className = 'chat-message';
-                
-                // XSS koruması için basit bir text-to-html dönüşümü
-                const safeText = document.createTextNode(msg.text).textContent
-                                    .replace(/\n/g, '<br>');
-
-                let content = `<p>${safeText}</p>`;
-                if (msg.image) {
-                    // Yüklenen resim (Data URL olarak saklanıyor)
-                    content += `<img src="${msg.image}" alt="Kullanıcı tarafından yüklenen fotoğraf" class="chat-image">`;
-                }
-
-                msgElement.innerHTML = `
-                    <div class="chat-message-header">
-                        <span class="chat-user-name">${document.createTextNode(msg.username).textContent}</span>
-                        <span class="chat-timestamp">${new Date(msg.timestamp).toLocaleString('tr-TR')}</span>
-                    </div>
-                    <div class="chat-message-content">
-                        ${content}
-                    </div>
-                `;
-                chatContainer.appendChild(msgElement);
-            });
-            // En son mesaja kaydır
+        function addMessageToBotChat(message, sender) {
+            const chatContainer = document.getElementById('botChatContainer');
+            if (!chatContainer) return; // Sayfa yüklenmemişse hata verme
+            const msgElement = document.createElement('div');
+            msgElement.className = `${sender}-message`;
+            msgElement.innerHTML = message.replace(/\n/g, '<br>'); // Satır sonlarını <br> yapar
+            chatContainer.appendChild(msgElement);
+            // En alta kaydır
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Yeni bir sohbet mesajı gönderir
-        async function sendChatMessage() {
-            const textInput = document.getElementById('chatMessageInput');
-            const photoInput = document.getElementById('chatPhotoInput');
-            const text = textInput.value.trim();
-            const file = photoInput.files[0];
-
-            if (!currentUser) return; // Güvenlik kontrolü
-            if (text === '' && !file) return; // Boş mesaj göndermeyi engelle
-
-            const button = document.getElementById('chatSendBtn');
-            button.innerHTML = '<div class="loading" style="width: 15px; height: 15px; border-top-color: white;"></div>';
-            button.disabled = true;
-
-            let imageUrl = null;
-            if (file) {
-                // Fotoğrafı Data URL'e çevir (localStorage'da saklamak için)
-                // UYARI: Bu, büyük dosyalarla localStorage'ı şişirebilir.
-                try {
-                    imageUrl = await fileToDataUrl(file);
-                } catch (error) {
-                    console.error("Fotoğraf okunamadı:", error);
-                    showAlert('Fotoğraf yüklenirken bir hata oluştu.', 'error');
-                }
-            }
-
-            const newMessage = {
-                id: Date.now(),
-                username: currentUser.username,
-                timestamp: new Date().toISOString(),
-                text: text,
-                image: imageUrl
-            };
-
-            const messages = JSON.parse(localStorage.getItem('weatherChatMessages') || '[]');
-            messages.push(newMessage);
-
-            // localStorage'ın dolmaması için eski mesajları sil (son 50 mesajı tut)
-            while (messages.length > 50) {
-                messages.shift(); // En eski mesajı kaldır
-            }
-
-            localStorage.setItem('weatherChatMessages', JSON.stringify(messages));
+        function handleBotQuestionClick(event) {
+            const question = event.target.textContent;
+            const answer = botAnswers[question];
             
-            // Formu temizle
-            textInput.value = '';
-            photoInput.value = null;
-            button.innerHTML = 'Gönder';
-            button.disabled = false;
+            if (!answer) return; // Cevap bulunamazsa bir şey yapma
 
-            // Sohbeti yeniden yükle
-            loadChatMessages();
+            // Soruyu kullanıcı mesajı olarak ekle
+            addMessageToBotChat(question, 'user');
+            
+            // Butonları geçici olarak devre dışı bırak
+            const buttons = document.querySelectorAll('.bot-question-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Botun düşünme simülasyonu
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'bot-message';
+            // Yükleme animasyonu için (loading class'ı zaten tanımlı)
+            loadingMsg.innerHTML = '<div class="loading" style="width: 15px; height: 15px; border-top-color: var(--text-color);"></div>';
+            const chatContainer = document.getElementById('botChatContainer');
+            chatContainer.appendChild(loadingMsg);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            setTimeout(() => {
+                // Yükleme mesajını kaldır
+                if (chatContainer.contains(loadingMsg)) {
+                    chatContainer.removeChild(loadingMsg);
+                }
+                // Cevabı bot mesajı olarak ekle
+                addMessageToBotChat(answer, 'bot');
+                // Butonları tekrar aktif et
+                buttons.forEach(btn => btn.disabled = false);
+            }, 1000 + Math.random() * 500); // 1-1.5 saniye arası bekle
         }
 
-        // Dosyayı Data URL'e çeviren yardımcı fonksiyon
-        function fileToDataUrl(file) {
-            return new Promise((resolve, reject) => {
-                // Dosya boyutu kontrolü (örn: 5MB limit)
-                if (file.size > 5 * 1024 * 1024) {
-                    reject(new Error('Dosya boyutu 5MB\'den büyük olamaz.'));
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
+        function initializeBot() {
+            const chatContainer = document.getElementById('botChatContainer');
+            if (!chatContainer) return;
+            // Sohbeti temizle ve karşılama mesajı ekle
+            chatContainer.innerHTML = '';
+            addMessageToBotChat("Merhaba! Ben İstanbul Hava Haberleri botuyum. Size nasıl yardımcı olabilirim? Lütfen aşağıdaki hazır sorulardan birini seçin.", 'bot');
+            
+            // Butonlara event listener ata
+            const questionButtons = document.querySelectorAll('.bot-question-btn');
+            questionButtons.forEach(button => {
+                // Eski listener'ları kaldır (varsa) ve yenisini ekle
+                button.removeEventListener('click', handleBotQuestionClick);
+                button.addEventListener('click', handleBotQuestionClick);
             });
         }
-        // --- SORULAR SAYFASI FONKSİYONLARI SONU ---
+        // --- BOT FONKSİYONLARI SONU ---
 
 
         // Initialize app
@@ -2583,13 +2478,15 @@
             function showPage(pageToShow) {
                 // YENİ: questionsPage listeye eklendi
                 [mainWeatherPage, winterForecastPage, autumnForecastPage, radarPage, winterCountdownPage, dewPointPage, springCountdownPage, summerCountdownPage, autumnCountdownPage, questionsPage].forEach(page => { 
-                    page.style.display = 'none';
+                    if(page) page.style.display = 'none';
                 });
                 // YENİ: Sorular sayfası bir flex container
-                if (pageToShow === questionsPage) {
-                    pageToShow.style.display = 'flex';
-                } else {
-                    pageToShow.style.display = 'block';
+                if (pageToShow) {
+                    if (pageToShow === questionsPage) {
+                        pageToShow.style.display = 'flex';
+                    } else {
+                        pageToShow.style.display = 'block';
+                    }
                 }
                 closeSidebar();
             }
@@ -2656,8 +2553,7 @@
             questionsLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 showPage(questionsPage);
-                loadChatMessages(); // Mesajları yükle
-                setupChatInput(); // Giriş alanını ayarla
+                initializeBot(); // Botu başlat
             });
 
             document.body.addEventListener('click', (e) => {
